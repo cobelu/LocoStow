@@ -1,5 +1,6 @@
 [package]
 name = "loco_stow"
+path = "src/main.rs"
 version = "0.1.0"
 authors = ["cobelu <imamac96@gmail.com>"]
 edition = "2018"

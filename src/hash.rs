@@ -1,9 +1,27 @@
+// hash.rs
+// Based on gthash by ChrisChares
+// https://github.com/ChrisChares/gthash
+
 struct Point {
     lat: f64,
     lon: f64,
-    time: i64
+    time: u64
 }
 
+struct ValueRange<T> {
+    min: T;
+    max: T;
+}
+
+let LatitudeRange: ValueRange = {
+    min: -90.0,
+    max: 90
+};
+
+let LongitudeRange: ValueRange = {
+    min: -180,
+    max: 180
+};
 
 // Encodes the hash
 pub fn encode_hash(point: Point, precision: i8) {
@@ -20,7 +38,10 @@ fn high_or_low<T>(min: T, max: T, value: T) -> i8 {
     }
 }
 
-fn calculate_bits() {
+fn calculate_bits<T>(range: ValueRange, value: T, precision: i8) -> &str {
+    // array_join() is fast for string concatenation:
+    // https://github.com/hoodie/concatenation_benchmarks-rs
+    let bits: &str = "";
 
 }
 
