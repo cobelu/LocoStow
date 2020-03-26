@@ -148,15 +148,15 @@ mod tests {
     }
 
     #[test]
-    fn test_high_or_low() {
+    fn test_high_or_low_time() {
         // High integers
-        assert_eq!(high_or_low(0, 5, 4), '1');
-        assert_eq!(high_or_low(5, 100000, 99999, '1'));
-        assert_eq!(high_or_low(-100000, -5, 99999, '1'));
+        assert_eq!(high_or_low_time(0, 5, 4), '1');
+        assert_eq!(high_or_low_time(5, 100000, 99999, '1'));
+        assert_eq!(high_or_low_time(-100000, -5, 99999, '1'));
         // Low integers
-        assert_eq!(high_or_low(0, 5, 1), '0');
-        assert_eq!(high_or_low(5, 100000, 7, '0'));
-        assert_eq!(high_or_low(-100000, -5, -999999, '0'));
+        assert_eq!(high_or_low_time(0, 5, 1), '0');
+        assert_eq!(high_or_low_time(5, 100000, 7, '0'));
+        assert_eq!(high_or_low_time(-100000, -5, -999999, '0'));
     }
 
     #[test]
