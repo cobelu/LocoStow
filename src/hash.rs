@@ -2,10 +2,6 @@
 // Based on gthash by ChrisChares
 // https://github.com/ChrisChares/gthash
 
-use std::ops::Add as _;
-use std::ops::Div as _;
-use std::cmp::PartialOrd as _;
-
 mod hash {
 
     struct Point {
@@ -14,26 +10,31 @@ mod hash {
         time: u64
     }
     
-    struct ValueRange<T> {
-        min: T,
-        max: T
+    struct CoordRange {
+        min: f64,
+        max: f64
     }
     
+    struct TimeRange {
+        min: u64,
+        max: u64
+    }
+
     // Latitude Range
-    const lat_range: ValueRange<f64> = ValueRange { min: -90.0, max: 90.0 };
+    const lat_range: CoordRange = CoordRange { min: -90.0, max: 90.0 };
     // Longitude Range
-    const lon_range: ValueRange<f64> = ValueRange { min: -180.0, max: 180.0 };
+    const lon_range: CoordRange = CoordRange { min: -180.0, max: 180.0 };
     // Timestamp range (ns from start of epoch)
-    const time_range: ValueRange<u64> = ValueRange { min: 0, max: u64::max_value() };
+    const time_range: TimeRange = TimeRange { min: 0, max: u64::max_value() };
     
     // Encodes the hash
     pub fn encode_hash(point: Point, precision: i8) {
         // Calculate bits for latitude, longitude, and timestamp
-        let lat_bits = calculate_bits(lat_range, point.lat, precision);
-        let lon_bits = calculate_bits(lon_range, point.lon, precision);
-        let time_bits = calculate_bits(time_range, point.time, precision);
+        let lat_bits = calculate_bits_coord(lat_range, point.lat, precision);
+        let lon_bits = calculate_bits_coord(lon_range, point.lon, precision);
+        let time_bits = calculate_bits_time(time_range, point.time, precision);
     
-        let mut interleaved_bits: String = "";
+        let mut interleaved_bits: String = "".to_string();
         for i in 0..precision {
             // Note that it's not good to get the char,
             // but we're working with '0' and '1'
@@ -68,35 +69,71 @@ mod hash {
     //     return base64;
     //   };
     
-    fn high_or_low<T: Add + Div + PartialOrd>(range: &ValueRange<T>, value: T) -> char {
+    fn high_or_low_coord(range: CoordRange, value: f64) -> bool {
         // Is it in the top or bottom half of the range?
-        if value > ((range.min + range.max) / 2) {
-            return '0';
+        if value > average_coord(range) {
+            return false;
         }
         else {
-            return '1';
+            return true;
+        }
+    }
+
+    fn high_or_low_time(range: TimeRange, value: u64) -> bool {
+        // Is it in the top or bottom half of the range?
+        if value > average_time(range) {
+            return false;
+        }
+        else {
+            return true;
         }
     }
     
-    fn calculate_bits<T>(range: ValueRange<T>, value: T, precision: i8) -> String {
-        let mut bits: String = "";
+    fn calculate_bits_coord(range: CoordRange, value: f64, precision: i8) -> String {
+        let mut bits: String = "".to_string();
         for i in 0..precision {
-            calculate_bits_logic(&range, &bits);
+            calculate_bits_logic_coord(range, value, &bits);
+        }
+        return bits
+    }
+
+    fn calculate_bits_time(range: TimeRange, value: u64, precision: i8) -> String {
+        let mut bits: String = "".to_string();
+        for i in 0..precision {
+            calculate_bits_logic_time(range, value, &bits);
         }
         return bits
     }
     
-    fn calculate_bits_logic<T>(range: &ValueRange<T>, bits: &String) {
-        let result: char = high_or_low(range.min, range.max, range);
+    fn calculate_bits_logic_coord(range: CoordRange, value: f64, bits: &String) {
+        let result: bool = high_or_low_coord(range, value);
         if result {
-            range.min = (range.min + range.max) / 2;
+            range.min = average_coord(range);
         }
         else {
-            range.max = (range.min + range.max) / 2;
+            range.max = average_coord(range)
         }
         bits.push_str(result)
     }
-    
+
+    fn calculate_bits_logic_time(range: TimeRange, value: u64, bits: &String) {
+        let result: bool = high_or_low_time(range, value);
+        if result {
+            range.min = average_time(range);
+        }
+        else {
+            range.max = average_time(range)
+        }
+        bits.push_str(result)
+    }
+
+    fn average_coord(range: CoordRange) -> f64 {
+        return (range.min + range.max) / 2.0;
+    }
+
+    fn average_time(range: TimeRange) -> u64 {
+        return (range.min + range.max) / 2;
+    }
 
 }
 
