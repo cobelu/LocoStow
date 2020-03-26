@@ -9,19 +9,12 @@ struct Point {
 }
 
 struct ValueRange<T> {
-    min: T;
-    max: T;
+    min: T,
+    max: T
 }
 
-let LatitudeRange: ValueRange = {
-    min: -90.0,
-    max: 90.0
-};
-
-let LongitudeRange: ValueRange = {
-    min: -180.0,
-    max: 180.0
-};
+const LatitudeRange: ValueRange<f64> = ValueRange { min: -90.0, max: 90.0 };
+const LongitudeRange: ValueRange<f64> = ValueRange { min: -180.0, max: 180.0 };
 
 // Encodes the hash
 pub fn encode_hash(point: Point, precision: i8) {
@@ -47,12 +40,12 @@ fn calculate_bits<T>(range: ValueRange<T>, value: T, precision: i8) -> String {
 }
 
 fn calculate_bits_logic(range: &ValueRange<T>, bits: &String) {
-    let result: char = high_or_low(min: range.min, max: range.max, value: T)
+    let result: char = high_or_low(min: range.min, max: range.max, value: T);
     if result {
         range.min = (range.min + range.max) / 2;
     }
     else {
-        range.max = max: (range.min + range.max) / 2;
+        range.max = (range.min + range.max) / 2;
     }
     bits.push_str(result)
 }
