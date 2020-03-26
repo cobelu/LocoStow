@@ -27,7 +27,18 @@ pub fn encode_hash(point: Point, precision: i8) {
     let lon_bits = calculate_bits(lon_range, point.lon, precision);
     let time_bits = calculate_bits(time_range, point.time, precision);
 
-    // TODO: Finish
+    let mut interleaved_bits: String = "";
+    for i in 0..precision {
+        // Note that it's not good to get the char,
+        // but we're working with '0' and '1'
+        &interleaved_bits.push_str(lat_bits[i]);
+        &interleaved_bits.push_str(lon_bits[i]);
+        &interleaved_bits.push_str(time_bits[i]);
+    }
+
+    // TODO: Chunk
+
+    // TODO: Convert to base64 chars
 }
 
 // export const encodeHash = (input: HashInput, precision: number|Precision): string => {
