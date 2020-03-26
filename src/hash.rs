@@ -13,13 +13,43 @@ struct ValueRange<T> {
     max: T
 }
 
-const LatitudeRange: ValueRange<f64> = ValueRange { min: -90.0, max: 90.0 };
-const LongitudeRange: ValueRange<f64> = ValueRange { min: -180.0, max: 180.0 };
+// Latitude Range
+const lat_range: ValueRange<f64> = ValueRange { min: -90.0, max: 90.0 };
+// Longitude Range
+const lon_range: ValueRange<f64> = ValueRange { min: -180.0, max: 180.0 };
+// Timestamp range (ns from start of epoch)
+const time_range: ValueRange<u64> = ValueRange { min: 0, max: u64::max_value() };
 
 // Encodes the hash
 pub fn encode_hash(point: Point, precision: i8) {
-    // TODO: Write this method
+    // Calculate bits for latitude, longitude, and timestamp
+    let lat_bits = calculate_bits(lat_range, point.lat, precision);
+    let lon_bits = calculate_bits(lon_range, point.lon, precision);
+    let time_bits = calculate_bits(time_range, point.time, precision);
+
+    // TODO: Finish
 }
+
+// export const encodeHash = (input: HashInput, precision: number|Precision): string => {
+//     const bitPrecision = Math.ceil((precision / 3) * 6)
+  
+//     const latBits = _calculateBits(LatitudeRange, input.latitude, bitPrecision);
+//     const longBits = _calculateBits(LongitudeRange, input.longitude, bitPrecision);
+//     const timeBits = _calculateBits(TimeStampRange, input.timestamp, bitPrecision);
+  
+//     let interleavedBits = '';
+//     for ( let i=0; i<latBits.length; i++) {
+//       interleavedBits += (latBits.charAt(i) + longBits.charAt(i) + timeBits.charAt(i));
+//     }
+  
+//     const chunked = interleavedBits.match(/.{1,6}/g);
+//     const ints = chunked.map(x => parseInt(x, 2));
+//     const numbers = Uint8Array.from(ints).buffer;
+  
+//     const buff = new Buffer(numbers);
+//     const base64 = buff.toString('base64');
+//     return base64;
+//   };
 
 fn high_or_low<T>(min: T, max: T, value: T) -> char {
     // Is it in the top or bottom half of the range?
@@ -49,24 +79,3 @@ fn calculate_bits_logic(range: &ValueRange<T>, bits: &String) {
     }
     bits.push_str(result)
 }
-
-// export const encodeHash = (input: HashInput, precision: number|Precision): string => {
-//     const bitPrecision = Math.ceil((precision / 3) * 6)
-  
-//     const latBits = _calculateBits(LatitudeRange, input.latitude, bitPrecision);
-//     const longBits = _calculateBits(LongitudeRange, input.longitude, bitPrecision);
-//     const timeBits = _calculateBits(TimeStampRange, input.timestamp, bitPrecision);
-  
-//     let interleavedBits = '';
-//     for ( let i=0; i<latBits.length; i++) {
-//       interleavedBits += (latBits.charAt(i) + longBits.charAt(i) + timeBits.charAt(i));
-//     }
-  
-//     const chunked = interleavedBits.match(/.{1,6}/g);
-//     const ints = chunked.map(x => parseInt(x, 2));
-//     const numbers = Uint8Array.from(ints).buffer;
-  
-//     const buff = new Buffer(numbers);
-//     const base64 = buff.toString('base64');
-//     return base64;
-//   };
