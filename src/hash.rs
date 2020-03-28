@@ -178,6 +178,16 @@ mod tests {
     }
 
     #[test]
+    fn test_average_coord() {
+        let mut range: CoordRange = CoordRange{min: 0.0, max: 5.0};
+        assert_eq!(average_coord(&mut range).floor(), 2.0);
+        let mut range: CoordRange = CoordRange{min: 100.0, max: 200.0};
+        assert_eq!(average_coord(&mut range).floor(), 150.0);
+        let mut range: CoordRange = CoordRange{min: 0.0, max: 10000.0};
+        assert_eq!(average_coord(&mut range).floor(), 5000.0);
+    }
+
+    #[test]
     fn test_calculate_bits() {
 
     }
