@@ -23,7 +23,7 @@ struct TimeRange {
 }
 
 // Encodes the hash
-pub fn encode_hash(point: Point, precision: i8) {
+pub fn encode_hash(point: Point, precision: u8) {
     // Latitude Range
     let mut lat_range: CoordRange = CoordRange { min: -90.0, max: 90.0 };
     // Longitude Range
@@ -36,13 +36,20 @@ pub fn encode_hash(point: Point, precision: i8) {
     let lon_bits = calculate_bits_coord(&mut lon_range, point.lon, precision);
     let time_bits = calculate_bits_time(&mut time_range, point.time, precision);
 
+    // Convert to char vectors
+    // https://stackoverflow.com/questions/47829646/how-do-i-convert-a-string-to-a-list-of-chars
+    let lat_vec: Vec<char> = lat_bits.chars().collect();
+    let lon_vec: Vec<char> = lon_bits.chars().collect();
+    let time_vec: Vec<char> = time_bits.chars().collect();
+
+    // Franco: need to make bits mut in order to modify it
     let mut interleaved_bits: String = "".to_string();
+    // Push on the bits from each vector
     for i in 0..precision {
-        // Note that it's not good to get the char,
-        // but we're working with '0' and '1'
-        // &interleaved_bits.push_str(lat_bits[i]);
-        // &interleaved_bits.push_str(lon_bits[i]);
-        // &interleaved_bits.push_str(time_bits[i]);
+        let u: usize = i as usize;
+        &interleaved_bits.push(lat_vec[u]);
+        &interleaved_bits.push(lon_vec[u]);
+        &interleaved_bits.push(time_vec[u]);
     }
 
     // TODO: Chunk
@@ -91,7 +98,7 @@ fn high_or_low_time(range: &mut TimeRange, value: u64) -> bool {
     }
 }
 
-fn calculate_bits_coord(range: &mut CoordRange, value: f64, precision: i8) -> String {
+fn calculate_bits_coord(range: &mut CoordRange, value: f64, precision: u8) -> String {
     let mut bits: String = "".to_string();// Franco: need to make bits mut in order to modify it
     for _ in 0..precision {
         calculate_bits_logic_coord(range, value, &mut bits); // Franco: need to pass a mutable borrow here (mutable reference) 
@@ -99,7 +106,7 @@ fn calculate_bits_coord(range: &mut CoordRange, value: f64, precision: i8) -> St
     return bits
 }
 
-fn calculate_bits_time(range: &mut TimeRange, value: u64, precision: i8) -> String {
+fn calculate_bits_time(range: &mut TimeRange, value: u64, precision: u8) -> String {
     let mut bits: String = "".to_string();
     for _ in 0..precision {
         calculate_bits_logic_time(range, value, &mut bits);
@@ -111,24 +118,24 @@ fn calculate_bits_logic_coord(range: &mut CoordRange, value: f64, bits: &mut Str
     let result: bool = high_or_low_coord(range, value);
     if result {
         range.min = average_coord(range);
+        bits.push('1');
     }
     else {
         range.max = average_coord(range);
+        bits.push('0');
     }
-    bits.push_str(if result { &"1" } else { &"0" })
 }
 
 fn calculate_bits_logic_time(range: &mut TimeRange, value: u64, bits: &mut String) {
     let high: bool = high_or_low_time(range, value);
     if high {
         range.min = average_time(range);
+        bits.push('1');
     }
     else {
         range.max = average_time(range);
+        bits.push('0');
     }
-    // Convert result to an integer
-    let result = (high as i8).to_string();
-    bits.push_str(&result)
 }
 
 fn average_coord(range: &mut CoordRange) -> f64 {
@@ -152,14 +159,15 @@ mod tests {
     #[test]
     fn test_high_or_low_time() {
         // High integers
-        let mut time_range1: TimeRange = TimeRange{min: 0, max: 5};
-        assert_eq!(high_or_low_time(&mut time_range1, 4), true);
-//        assert_eq!(high_or_low_time(5, 100000, 99999, '1'));
-//        assert_eq!(high_or_low_time(-100000, -5, 99999, '1'));
+        let mut range: TimeRange = TimeRange{min: 0, max: 5};
+        assert_eq!(high_or_low_time(&mut range, 4), true);
+        range = TimeRange{min: 5, max: 10000};
+        assert_eq!(high_or_low_time(&mut range, 9999), true);
         // Low integers
-//        assert_eq!(high_or_low_time(0, 5, 1), '0');
-//        assert_eq!(high_or_low_time(5, 100000, 7, '0'));
-//        assert_eq!(high_or_low_time(-100000, -5, -999999, '0'));
+        range = TimeRange{min: 0, max: 5};
+        assert_eq!(high_or_low_time(&mut range, 1), false);
+        range = TimeRange{min: 7, max: 100000};
+        assert_eq!(high_or_low_time(&mut range, 1), false);
     }
 
     #[test]
@@ -181,9 +189,9 @@ mod tests {
     fn test_average_coord() {
         let mut range: CoordRange = CoordRange{min: 0.0, max: 5.0};
         assert_eq!(average_coord(&mut range).floor(), 2.0);
-        let mut range: CoordRange = CoordRange{min: 100.0, max: 200.0};
+        range = CoordRange{min: 100.0, max: 200.0};
         assert_eq!(average_coord(&mut range).floor(), 150.0);
-        let mut range: CoordRange = CoordRange{min: 0.0, max: 10000.0};
+        range = CoordRange{min: 0.0, max: 10000.0};
         assert_eq!(average_coord(&mut range).floor(), 5000.0);
     }
 
