@@ -74,20 +74,20 @@ pub fn encode_hash(point: Point, precision: i8) {
 fn high_or_low_coord(range: &mut CoordRange, value: f64) -> bool {
     // Is it in the top or bottom half of the range?
     if value > average_coord(range) {
-        return false;
+        return true;
     }
     else {
-        return true;
+        return false;
     }
 }
 
 fn high_or_low_time(range: &mut TimeRange, value: u64) -> bool {
     // Is it in the top or bottom half of the range?
     if value > average_time(range) {
-        return false;
+        return true;
     }
     else {
-        return true;
+        return false;
     }
 }
 
@@ -153,7 +153,7 @@ mod tests {
     fn test_high_or_low_time() {
         // High integers
         let mut time_range1: TimeRange = TimeRange{min: 0, max: 5};
-//        assert_eq!(high_or_low_time(&mut time_range1, 4), '1');
+        assert_eq!(high_or_low_time(&mut time_range1, 4), true);
 //        assert_eq!(high_or_low_time(5, 100000, 99999, '1'));
 //        assert_eq!(high_or_low_time(-100000, -5, 99999, '1'));
         // Low integers
