@@ -2,7 +2,8 @@
 // Based on gthash by ChrisChares
 // https://github.com/ChrisChares/gthash
 
-mod hash {
+//mod hash { // Franco: move all code to be hash::, instead of hash::hash:: (comment has
+//implications in the test sub mod
 
     pub struct Point { // Franco: needed to do this because pub fn encode_hash is a public function implying that Point is public
         lat: f64,
@@ -137,12 +138,12 @@ mod hash {
         return (range.min + range.max) / 2;
     }
 
-}
+//}
 
 #[cfg(test)]
 mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.
-    use super::*;
+    use super::*; // Franco: now this super will see high_or_low_time because it's a submodule
 
     #[test]
     fn encode_hash() {
