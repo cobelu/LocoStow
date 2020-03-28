@@ -163,12 +163,32 @@ mod tests {
     }
 
     #[test]
+    fn test_high_or_low_coord() {
+
+    }
+    
+    #[test]
+    fn test_average_time() {
+        let mut range: TimeRange = TimeRange{min: 0, max: 5};
+        assert_eq!(average_time(&mut range), 2);
+        range = TimeRange{min: 100, max: 200};
+        assert_eq!(average_time(&mut range), 150);
+        range = TimeRange{min: 0, max: 10000};
+        assert_eq!(average_time(&mut range), 5000);
+    }
+
+    #[test]
     fn test_calculate_bits() {
 
     }
 
     #[test]
-    fn calculate_bits_logic() {
+    fn test_calculate_bits_logic_time() {
+
+    }
+
+    #[test]
+    fn test_calculate_bits_logic_coord() {
 
     }
 
