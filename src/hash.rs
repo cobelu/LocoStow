@@ -4,7 +4,7 @@
 
 mod hash {
 
-    struct Point {
+    pub struct Point { // Franco: needed to do this because pub fn encode_hash is a public function implying that Point is public
         lat: f64,
         lon: f64,
         time: u64
@@ -90,22 +90,22 @@ mod hash {
     }
     
     fn calculate_bits_coord(range: &mut CoordRange, value: f64, precision: i8) -> String {
-        let bits: String = "".to_string();
+        let mut bits: String = "".to_string();// Franco: need to make bits mut in order to modify it
         for _ in 0..precision {
-            calculate_bits_logic_coord(range, value, &bits);
+            calculate_bits_logic_coord(range, value, &mut bits); // Franco: need to pass a mutable borrow here (mutable reference) 
         }
         return bits
     }
 
     fn calculate_bits_time(range: &mut TimeRange, value: u64, precision: i8) -> String {
-        let bits: String = "".to_string();
+        let mut bits: String = "".to_string();
         for _ in 0..precision {
-            calculate_bits_logic_time(range, value, &bits);
+            calculate_bits_logic_time(range, value, &mut bits);
         }
         return bits
     }
     
-    fn calculate_bits_logic_coord(range: &mut CoordRange, value: f64, bits: &mut &String) {
+    fn calculate_bits_logic_coord(range: &mut CoordRange, value: f64, bits: &mut String) { // Franco: your previous version was a mutable borrow of a borrowed reference to a string, (in C-speak, pointer some memory containing the address of a char[]) what you want is simply a mutable borrow of that string.
         let result: bool = high_or_low_coord(range, value);
         if result {
             range.min = average_coord(range);
@@ -116,7 +116,7 @@ mod hash {
         bits.push_str(if result { &"1" } else { &"0" })
     }
 
-    fn calculate_bits_logic_time(range: &mut TimeRange, value: u64, bits: &mut &String) {
+    fn calculate_bits_logic_time(range: &mut TimeRange, value: u64, bits: &mut String) {
         let high: bool = high_or_low_time(range, value);
         if high {
             range.min = average_time(range);
