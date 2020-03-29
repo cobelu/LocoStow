@@ -7,7 +7,7 @@
 // mod hash {
 
 pub struct Point { // Franco: needed to do this because pub fn encode_hash is a public function implying that Point is public
-    lat: f64,
+lat: f64,
     lon: f64,
     time: u64
 }
@@ -59,20 +59,20 @@ pub fn encode_hash(point: Point, precision: u8) {
 
 // export const encodeHash = (input: HashInput, precision: number|Precision): string => {
 //     const bitPrecision = Math.ceil((precision / 3) * 6)
-    
+
 //     const latBits = _calculateBits(LatitudeRange, input.latitude, bitPrecision);
 //     const longBits = _calculateBits(LongitudeRange, input.longitude, bitPrecision);
 //     const timeBits = _calculateBits(TimeStampRange, input.timestamp, bitPrecision);
-    
+
 //     let interleavedBits = '';
 //     for ( let i=0; i<latBits.length; i++) {
 //       interleavedBits += (latBits.charAt(i) + longBits.charAt(i) + timeBits.charAt(i));
 //     }
-    
+
 //     const chunked = interleavedBits.match(/.{1,6}/g);
 //     const ints = chunked.map(x => parseInt(x, 2));
 //     const numbers = Uint8Array.from(ints).buffer;
-    
+
 //     const buff = new Buffer(numbers);
 //     const base64 = buff.toString('base64');
 //     return base64;
@@ -101,7 +101,7 @@ fn high_or_low_time(range: &mut TimeRange, value: u64) -> bool {
 fn calculate_bits_coord(range: &mut CoordRange, value: f64, precision: u8) -> String {
     let mut bits: String = "".to_string();// Franco: need to make bits mut in order to modify it
     for _ in 0..precision {
-        calculate_bits_logic_coord(range, value, &mut bits); // Franco: need to pass a mutable borrow here (mutable reference) 
+        calculate_bits_logic_coord(range, value, &mut bits); // Franco: need to pass a mutable borrow here (mutable reference)
     }
     return bits
 }
@@ -153,7 +153,7 @@ mod tests {
 
     #[test]
     fn encode_hash() {
-    
+
     }
 
     #[test]
@@ -172,9 +172,18 @@ mod tests {
 
     #[test]
     fn test_high_or_low_coord() {
-
+        // High integers
+        let mut range: CoordRange = CoordRange{min: 0.0, max: 9.0};
+        assert_eq!(high_or_low_coord(&mut range, 4.6), true);
+        range = CoordRange{min: 5.0, max: 400.0};
+        assert_eq!(high_or_low_coord(&mut range, 9999.0), true);
+        // Low integers
+        range = CoordRange{min: 0.0, max: 9.0};
+        assert_eq!(high_or_low_coord(&mut range, 3.2), false);
+        range = CoordRange{min: 5.0, max: 6000.0};
+        assert_eq!(high_or_low_coord(&mut range, 0.5), false);
     }
-    
+
     #[test]
     fn test_average_time() {
         let mut range: TimeRange = TimeRange{min: 0, max: 5};
@@ -195,19 +204,19 @@ mod tests {
         assert_eq!(average_coord(&mut range).floor(), 5000.0);
     }
 
-    #[test]
-    fn test_calculate_bits() {
-
-    }
 
     #[test]
-    fn test_calculate_bits_logic_time() {
-
+    fn test_calculate_bits_time() {
+        let mut time_range: TimeRange = TimeRange { min: 0, max: 500 };
+        assert_eq!(calculate_bits_time(&mut time_range, 400, 5),"11001");
+        assert_eq!(calculate_bits_time(&mut time_range, 66, 3),"000");
     }
+
 
     #[test]
-    fn test_calculate_bits_logic_coord() {
-
+    fn test_calculate_bits_coord() {
+        let mut coord_range: CoordRange = CoordRange { min: -90.0, max: 90.0 };
+        assert_eq!(calculate_bits_coord(&mut coord_range, 42.3601, 5),"10111");
+        assert_eq!(calculate_bits_coord(&mut coord_range, 71.0589, 7),"1111111");
     }
-
 }
