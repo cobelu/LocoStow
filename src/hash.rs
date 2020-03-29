@@ -6,9 +6,16 @@
 // (comment has implications in the test sub mod
 // mod hash {
 
+
 extern crate regex;
 extern crate js_sys;
+
+
+
 use regex::Regex;
+use js_sys::parse_int;
+use num_traits::Num;
+//use js_sys::Uint8array;
 
 pub struct Point {
     // Franco: needed to do this because pub fn encode_hash is a public function implying that Point is public
@@ -28,6 +35,7 @@ struct TimeRange {
 }
 
 // Encodes the hash
+
 pub fn encode_hash(point: Point, precision: u8) {
     // Latitude Range
     let mut lat_range: CoordRange = CoordRange {
@@ -65,21 +73,34 @@ pub fn encode_hash(point: Point, precision: u8) {
         &interleaved_bits.push(lon_vec[u]);
         &interleaved_bits.push(time_vec[u]);
     }
-
+    println!("{}",&interleaved_bits);
     // TODO: Chunk
     // const chunked = interleavedBits.match(/.{1,6}/g);
     // Look for instances of '1's
-    let re: Regex = Regex::new(r"/.{1,6}/g").unwrap();
-    for caps in re.captures_iter(&interleaved_bits) {
-        // https://docs.rs/js-sys/0.3.14/js_sys/fn.parse_int.html
-        // const ints = chunked.map(x => parseInt(x, 2));
-        // const numbers = Uint8Array.from(ints).buffer;
+    //let re: Regex = Regex::new(r".{1,6}").unwrap();
+    let mut reg_vec: Vec<u8> = Vec::new();
+
+    for cap in Regex::new(r".{1,6}").unwrap().captures_iter(&interleaved_bits) {
+        //println!("Captures: {:?}", &cap[0]);
+        let result: u8 = <u8 as Num>::from_str_radix(&cap[0].to_string(),2).unwrap();
+        println!("{}",result);
+        reg_vec.push(result);
     }
+
+    //for caps in re.captures_iter(&interleaved_bits) {
+    //https://docs.rs/js-sys/0.3.14/js_sys/fn.parse_int.html
+    //const ints = chunked.map(x => parseInt(x, 2));
+    //const numbers = Uint8Array.from(ints).buffer;
+    //}
+    //let mut reg_vec: Vec<f64> = re.find_iter(&interleaved_bits)
+    //  .map(|val|parse_int(val.as_str(),2))
+    //.collect();
+    println!("{:?}",reg_vec);
 
     // https://docs.rs/base64/0.12.0/base64/
     let text: String = "".to_string();
-    let encoded_char = base64::encode(text);
-
+    let encoded_char = base64::encode(reg_vec);
+    println!("{}",encoded_char);
     // TODO: Convert to base64re chars
     // const buff = new Buffer(numbers);
     // const base64 = buff.toString('base64');
@@ -158,7 +179,10 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_encode_hash() {}
+    fn test_encode_hash() {
+        let point: Point = Point{lat: 28.5620, lon: -80.57721, time: 14601600};
+        encode_hash(point,30);
+    }
 
     #[test]
     fn test_high_or_low_time() {
