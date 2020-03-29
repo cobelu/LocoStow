@@ -7,7 +7,7 @@
 // mod hash {
 
 extern crate regex;
-
+extern crate js_sys;
 use regex::Regex;
 
 pub struct Point {
