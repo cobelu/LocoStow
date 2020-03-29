@@ -9,7 +9,6 @@
 extern crate regex;
 
 use regex::Regex;
-use js_sys::parse_int;
 
 pub struct Point {
     // Franco: needed to do this because pub fn encode_hash is a public function implying that Point is public
@@ -72,12 +71,14 @@ pub fn encode_hash(point: Point, precision: u8) {
     // Look for instances of '1's
     let re: Regex = Regex::new(r"/.{1,6}/g").unwrap();
     for caps in re.captures_iter(&interleaved_bits) {
-
+        // https://docs.rs/js-sys/0.3.14/js_sys/fn.parse_int.html
+        // const ints = chunked.map(x => parseInt(x, 2));
+        // const numbers = Uint8Array.from(ints).buffer;
     }
 
-    // const ints = chunked.map(x => parseInt(x, 2));
-
-    // const numbers = Uint8Array.from(ints).buffer;
+    // https://docs.rs/base64/0.12.0/base64/
+    let text: String = "".to_string();
+    let encoded_char = base64::encode(text);
 
     // TODO: Convert to base64re chars
     // const buff = new Buffer(numbers);
