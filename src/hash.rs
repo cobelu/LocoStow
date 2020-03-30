@@ -18,6 +18,17 @@ pub struct Point {
     pub time: u64,
 }
 
+pub struct Error {
+    pub lat_err: f64,
+    pub lon_err: f64,
+    pub time_err: u64,
+}
+
+pub struct Output {
+    pub point: Point,
+    pub error: Error,
+}
+
 struct CoordRange {
     min: f64,
     max: f64,
@@ -81,9 +92,44 @@ pub fn encode_hash(point: Point, precision: u8) -> String {
     // https://docs.rs/base64/0.12.0/base64/
     let encoded = base64::encode(reg_vec);
 
-    println!("{}", encoded);
-
     return encoded.to_string();
+}
+
+pub fn decode(hash: String) -> Output {
+    // Decode from Base 64
+    let reg_vec: Vec<u8> = base64::decode(hash).unwrap();
+
+    // TODO: Binary string
+    let binary_string: String = "".to_string();
+    let binary_vec: Vec<char> = binary_string.chars().collect();
+
+    // Build up the bit strings
+    let mut lat_bits: String = "".to_string();
+    let mut lon_bits: String = "".to_string();
+    let mut time_bits: String = "".to_string();
+    for i in 0..binary_string.len() {
+        match i % 3 {
+            0 => lat_bits += &binary_vec[i].to_string(),
+            1 => lon_bits += &binary_vec[i].to_string(),
+            _ => time_bits += &binary_vec[i].to_string(),
+        }
+    }
+
+    // TODO: Return real values
+    let fake_point: Point = Point {
+        lat: 0.0,
+        lon: 0.0,
+        time: 0,
+    };
+    let fake_err: Error = Error {
+        lat_err: 0.0,
+        lon_err: 0.0,
+        time_err: 0,
+    };
+    return Output {
+        point: fake_point,
+        error: fake_err,
+    };
 }
 
 fn high_or_low_coord(range: &mut CoordRange, value: f64) -> bool {
@@ -166,7 +212,8 @@ mod tests {
             lon: -80.57721,
             time: 14601600,
         };
-        encode_hash(point, 30);
+        let encoded: String = encode_hash(point, 30);
+        assert_eq!(encoded, "IiAiEDAWJDYCBjImFgYi");
     }
 
     #[test]
