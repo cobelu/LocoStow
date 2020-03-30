@@ -41,21 +41,10 @@ struct TimeRange {
 
 // Encodes the hash
 pub fn encode_hash(point: Point, precision: u8) -> String {
-    // Latitude Range
-    let mut lat_range: CoordRange = CoordRange {
-        min: -90.0,
-        max: 90.0,
-    };
-    // Longitude Range
-    let mut lon_range: CoordRange = CoordRange {
-        min: -180.0,
-        max: 180.0,
-    };
-    // Timestamp range (ns from start of epoch)
-    let mut time_range: TimeRange = TimeRange {
-        min: 0,
-        max: u64::max_value(),
-    };
+    // Ranges
+    let mut lat_range: CoordRange = new_lat_range();
+    let mut lon_range: CoordRange = new_lon_range();
+    let mut time_range: TimeRange = new_time_range();
 
     // Calculate bits for latitude, longitude, and timestamp
     let lat_bits: String = calculate_bits_coord(&mut lat_range, point.lat, precision);
@@ -115,20 +104,28 @@ pub fn decode(hash: String) -> Output {
         }
     }
 
-    // TODO: Return real values
-    let fake_point: Point = Point {
-        lat: 0.0,
-        lon: 0.0,
-        time: 0,
+    // Create ranges and decode
+    let mut lat_range: CoordRange = new_lat_range();
+    let mut lon_range: CoordRange = new_lon_range();
+    let mut time_range: TimeRange = new_time_range();
+    let (lat, lat_err) = decode_binary_coord(lat_bits, &mut lat_range);
+    let (lon, lon_err) = decode_binary_coord(lon_bits, &mut lon_range);
+    let (time, time_err) = decode_binary_time(time_bits, &mut time_range);
+
+    // Create point, error and return
+    let point: Point = Point {
+        lat: lat,
+        lon: lon,
+        time: time,
     };
-    let fake_err: Error = Error {
-        lat_err: 0.0,
-        lon_err: 0.0,
-        time_err: 0,
+    let error: Error = Error {
+        lat_err: lat_err,
+        lon_err: lon_err,
+        time_err: time_err,
     };
     return Output {
-        point: fake_point,
-        error: fake_err,
+        point: point,
+        error: error,
     };
 }
 
@@ -199,6 +196,39 @@ fn average_coord(range: &mut CoordRange) -> f64 {
 fn average_time(range: &mut TimeRange) -> u64 {
     return (range.min + range.max) / 2;
 }
+
+fn decode_binary_coord(bits: String, range: &mut CoordRange) -> (f64, f64) {
+    // TODO: Write this function
+    return (0.0, 0.0);
+}
+
+fn decode_binary_time(bits: String, range: &mut TimeRange) -> (u64, u64) {
+    // TODO: Write this function
+    return (0, 0);
+}
+
+fn new_lat_range() -> CoordRange {
+    return CoordRange {
+        min: -90.0,
+        max: 90.0,
+    };
+}
+
+fn new_lon_range() -> CoordRange {
+    return CoordRange {
+        min: -180.0,
+        max: 180.0,
+    };
+}
+
+fn new_time_range() -> TimeRange {
+    return TimeRange {
+        min: 0,
+        max: u64::max_value(),
+
+    };
+}
+
 
 #[cfg(test)]
 mod tests {
