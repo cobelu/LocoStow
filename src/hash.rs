@@ -198,13 +198,33 @@ fn average_time(range: &mut TimeRange) -> u64 {
 }
 
 fn decode_binary_coord(bits: String, range: &mut CoordRange) -> (f64, f64) {
-    // TODO: Write this function
-    return (0.0, 0.0);
+    let bits_vec: Vec<char> = bits.chars().collect();
+    for i in 0..bits_vec.len() {
+        let bit: char = bits_vec[i];
+        if bit == '1' {
+            range.min = average_coord(range);
+        } else {
+            range.max = average_coord(range);
+        }
+    }
+    // Calculate error and return
+    let error = (range.max - range.min) / 2.0;
+    return (range.min + error, error);
 }
 
 fn decode_binary_time(bits: String, range: &mut TimeRange) -> (u64, u64) {
-    // TODO: Write this function
-    return (0, 0);
+    let bits_vec: Vec<char> = bits.chars().collect();
+    for i in 0..bits_vec.len() {
+        let bit: char = bits_vec[i];
+        if bit == '1' {
+            range.min = average_time(range);
+        } else {
+            range.max = average_time(range);
+        }
+    }
+    // Calculate error and return
+    let error = (range.max - range.min) / 2;
+    return (range.min + error, error);
 }
 
 fn new_lat_range() -> CoordRange {
@@ -225,10 +245,8 @@ fn new_time_range() -> TimeRange {
     return TimeRange {
         min: 0,
         max: u64::max_value(),
-
     };
 }
-
 
 #[cfg(test)]
 mod tests {
