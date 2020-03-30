@@ -255,13 +255,50 @@ mod tests {
 
     #[test]
     fn test_encode_hash() {
-        let point: Point = Point {
-            lat: 28.5620,
-            lon: -80.57721,
-            time: 14601600,
+        // Sherman, TX
+        let point1: Point = Point {
+            lat: 33.635590,
+            lon: -96.609016,
+            time: 1585590948000,
         };
-        let encoded: String = encode_hash(point, 30);
-        assert_eq!(encoded, "IiAiEDAWJDYCBjImFgYi");
+        let encoded1: String = encode_hash(point1, 30);
+        assert_eq!(encoded1, "IDI0NiYEFiAWBjIDES0G");
+
+        // Providence, RI
+        let point2: Point = Point {
+            lat: 41.823990,
+            lon: -71.412834,
+            time: 1577836800000,
+        };
+        let encoded2: String = encode_hash(point2, 30);
+        assert_eq!(encoded2, "IiQyJgQ2IjYwMgQhFTo5");
+    }
+
+    #[test]
+    fn test_decode_hash() {
+        // Sherman, TX
+        let decoded1: Output = decode("IiAiEDAWJDYCBjInFw8i".to_string());
+        let lat = decoded1.point.lat;
+        assert!(33.0 < lat);
+        assert!(lat < 34.0);
+        let lon = decoded1.point.lon;
+        assert!(-97.0 < lon);
+        assert!(lon < -96.0);
+        let time = decoded1.point.time;
+        assert!(1585590900000 < time);
+        assert!(time < 1585591000000);
+
+        // Providence, RI
+        let decoded2: Output = decode("IiQyJgQ2IjYwMgQhFTo5".to_string());
+        let lat = decoded2.point.lat;
+        assert!(41.0 < lat);
+        assert!(lat < 42.0);
+        let lon = decoded2.point.lon;
+        assert!(-72.0 < lon);
+        assert!(lon < -71.0);
+        let time = decoded2.point.time;
+        assert!(1577835000000 < time);
+        assert!(time < 1577837000000);
     }
 
     #[test]
