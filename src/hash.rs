@@ -86,17 +86,27 @@ pub fn encode_hash(point: Point, precision: u8) -> String {
 
 pub fn decode(hash: String) -> Output {
     // Decode from Base 64
-    let reg_vec: Vec<u8> = base64::decode(hash).unwrap();
+    let nums: Vec<u8> = base64::decode(hash).unwrap();
+    let mut binary_str: String = "".to_string();
 
     // TODO: Binary string
-    let binary_string: String = "".to_string();
-    let binary_vec: Vec<char> = binary_string.chars().collect();
+    for i in 0..nums.len() {
+        let next: u8 = nums[i];
+        // 5, 4, 3, 2, 1, 0
+        for i in (0..6).rev() {
+            let next_int: u8 = (next >> i) & 1;
+             // Convert to binary String
+            let next_str: String = format!("{:b}", next_int);
+            binary_str.push_str(&next_str);
+        }
+    }
+    let binary_vec: Vec<char> = binary_str.chars().collect();
 
     // Build up the bit strings
     let mut lat_bits: String = "".to_string();
     let mut lon_bits: String = "".to_string();
     let mut time_bits: String = "".to_string();
-    for i in 0..binary_string.len() {
+    for i in 0..binary_vec.len() {
         match i % 3 {
             0 => lat_bits += &binary_vec[i].to_string(),
             1 => lon_bits += &binary_vec[i].to_string(),
