@@ -11,12 +11,13 @@ extern crate regex;
 use num_traits::Num;
 use regex::Regex;
 use std::fmt;
+use num_traits::real::Real;
 
 pub struct Point {
     // Franco: needed to do this because pub fn encode_hash is a public function implying that Point is public
     pub lat: f64,
     pub lon: f64,
-    pub time: u64,
+    pub time: i64,
 }
 
 impl fmt::Display for Point {
@@ -28,7 +29,7 @@ impl fmt::Display for Point {
 pub struct Error {
     pub lat_err: f64,
     pub lon_err: f64,
-    pub time_err: u64,
+    pub time_err: i64,
 }
 
 impl fmt::Display for Error {
@@ -54,8 +55,8 @@ struct CoordRange {
 }
 
 struct TimeRange {
-    min: u64,
-    max: u64,
+    min: i64,
+    max: i64,
 }
 
 // Encodes the hash
@@ -167,7 +168,7 @@ fn high_or_low_coord(range: &mut CoordRange, value: f64) -> bool {
     }
 }
 
-fn high_or_low_time(range: &mut TimeRange, value: u64) -> bool {
+fn high_or_low_time(range: &mut TimeRange, value: i64) -> bool {
     // Is it in the top or bottom half of the range?
     if value > average_time(range) {
         return true;
@@ -185,7 +186,7 @@ fn calculate_bits_coord(range: &mut CoordRange, value: f64, precision: u8) -> St
     return bits;
 }
 
-fn calculate_bits_time(range: &mut TimeRange, value: u64, precision: u8) -> String {
+fn calculate_bits_time(range: &mut TimeRange, value: i64, precision: u8) -> String {
     let mut bits: String = "".to_string();
     for _ in 0..precision {
         calculate_bits_logic_time(range, value, &mut bits);
@@ -207,7 +208,7 @@ fn calculate_bits_logic_coord(range: &mut CoordRange, value: f64, bits: &mut Str
     }
 }
 
-fn calculate_bits_logic_time(range: &mut TimeRange, value: u64, bits: &mut String) {
+fn calculate_bits_logic_time(range: &mut TimeRange, value: i64, bits: &mut String) {
     let high: bool = high_or_low_time(range, value);
     if high {
         range.min = average_time(range);
@@ -222,7 +223,7 @@ fn average_coord(range: &mut CoordRange) -> f64 {
     return (range.min + range.max) / 2.0;
 }
 
-fn average_time(range: &mut TimeRange) -> u64 {
+fn average_time(range: &mut TimeRange) -> i64 {
     return (range.min + range.max) / 2;
 }
 
@@ -241,7 +242,7 @@ fn decode_binary_coord(bits: String, range: &mut CoordRange) -> (f64, f64) {
     return (range.min + error, error);
 }
 
-fn decode_binary_time(bits: String, range: &mut TimeRange) -> (u64, u64) {
+fn decode_binary_time(bits: String, range: &mut TimeRange) -> (i64, i64) {
     let bits_vec: Vec<char> = bits.chars().collect();
     for i in 0..bits_vec.len() {
         let bit: char = bits_vec[i];
@@ -272,8 +273,8 @@ fn new_lon_range() -> CoordRange {
 
 fn new_time_range() -> TimeRange {
     return TimeRange {
-        min: 0,
-        max: u64::max_value(),
+        min: -1 * 60 * 60 * 24 * 365 * 100000,
+        max: 60 * 60 * 24 * 365 * 100000,
     };
 }
 
@@ -288,25 +289,25 @@ mod tests {
         let point1: Point = Point {
             lat: 33.635590,
             lon: -96.609016,
-            time: 1585590948000,
+            time: 1585879412,
         };
         let encoded1: String = encode_hash(point1, 30);
-        assert_eq!(encoded1, "IDI0NiYEFiAWBjIDES0G");
+        assert_eq!(encoded1, "KDI0NiYFFiAXDzoKES0H");
 
         // Providence, RI
         let point2: Point = Point {
             lat: 41.823990,
             lon: -71.412834,
-            time: 1577836800000,
+            time: 1491098612,
         };
         let encoded2: String = encode_hash(point2, 30);
-        assert_eq!(encoded2, "IiQyJgQ2IjYwMgQhFTo5");
+        assert_eq!(encoded2, "KiQyJgQ2Kz8xOw0oFTMx");
     }
 
     #[test]
     fn test_decode_hash() {
         // Sherman, TX
-        let decoded1: Output = decode("IiAiEDAWJDYCBjInFw8i".to_string());
+        let decoded1: Output = decode("KDI0NiYFFiAXDzoKES0H".to_string());
         println!("{}", decoded1);
         let lat = decoded1.point.lat;
         assert!(33.0 < lat);
@@ -315,11 +316,11 @@ mod tests {
         assert!(-97.0 < lon);
         assert!(lon < -96.0);
         let time = decoded1.point.time;
-        assert!(1585590900000 < time);
-        assert!(time < 1585591000000);
+        assert!(1585881000 < time);
+        assert!(time < 1585882000);
 
         // Providence, RI
-        let decoded2: Output = decode("IiQyJgQ2IjYwMgQhFTo5".to_string());
+        let decoded2: Output = decode("KiQyJgQ2Kz8xOw0oFTMx".to_string());
         println!("{}", decoded2);
         let lat = decoded2.point.lat;
         assert!(41.0 < lat);
@@ -328,8 +329,8 @@ mod tests {
         assert!(-72.0 < lon);
         assert!(lon < -71.0);
         let time = decoded2.point.time;
-        assert!(1577835000000 < time);
-        assert!(time < 1577837000000);
+        assert!(1491098000 < time);
+        assert!(time < 1491099000);
     }
 
     #[test]
