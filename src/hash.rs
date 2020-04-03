@@ -10,6 +10,7 @@ extern crate regex;
 
 use num_traits::Num;
 use regex::Regex;
+use std::fmt;
 
 pub struct Point {
     // Franco: needed to do this because pub fn encode_hash is a public function implying that Point is public
@@ -18,15 +19,33 @@ pub struct Point {
     pub time: u64,
 }
 
+impl fmt::Display for Point {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {}, {})", self.lat, self.lon, self.time)
+    }
+}
+
 pub struct Error {
     pub lat_err: f64,
     pub lon_err: f64,
     pub time_err: u64,
 }
 
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {}, {})", self.lat_err, self.lon_err, self.time_err)
+    }
+}
+
 pub struct Output {
     pub point: Point,
     pub error: Error,
+}
+
+impl fmt::Display for Output {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} ± {}", self.point, self.error)
+    }
 }
 
 struct CoordRange {
@@ -288,6 +307,7 @@ mod tests {
     fn test_decode_hash() {
         // Sherman, TX
         let decoded1: Output = decode("IiAiEDAWJDYCBjInFw8i".to_string());
+        println!("{}", decoded1);
         let lat = decoded1.point.lat;
         assert!(33.0 < lat);
         assert!(lat < 34.0);
@@ -300,6 +320,7 @@ mod tests {
 
         // Providence, RI
         let decoded2: Output = decode("IiQyJgQ2IjYwMgQhFTo5".to_string());
+        println!("{}", decoded2);
         let lat = decoded2.point.lat;
         assert!(41.0 < lat);
         assert!(lat < 42.0);

@@ -17,10 +17,5 @@ fn main() {
     println!("{}", hash);
 
     let output: Output = decode(hash);
-    let point: Point = output.point;
-    let error: Error = output.error;
-    println!(
-        "({}, {}, {}) w/ error ({}, {}, {})",
-        point.lat, point.lon, point.time, error.lat_err, error.lon_err, error.time_err
-    );
+    println!("{}", output);
 }
