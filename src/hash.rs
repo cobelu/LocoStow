@@ -112,12 +112,14 @@ pub fn encode(point: Point, precision: u8) -> Hash {
     // https://docs.rs/base64/0.12.0/base64/
     let encoded = base64::encode(reg_vec);
 
-    return Hash{hash: encoded.to_string()};
+    return Hash {
+        hash: encoded.to_string(),
+    };
 }
 
-pub fn decode(hash: String) -> Output {
+pub fn decode(hash: Hash) -> Output {
     // Decode from Base 64
-    let nums: Vec<u8> = base64::decode(hash).unwrap();
+    let nums: Vec<u8> = base64::decode(hash.hash).unwrap();
     let mut binary_str: String = "".to_string();
 
     // TODO: Binary string
@@ -126,7 +128,7 @@ pub fn decode(hash: String) -> Output {
         // 5, 4, 3, 2, 1, 0
         for i in (0..6).rev() {
             let next_int: u8 = (next >> i) & 1;
-             // Convert to binary String
+            // Convert to binary String
             let next_str: String = format!("{:b}", next_int);
             binary_str.push_str(&next_str);
         }
@@ -318,7 +320,10 @@ mod tests {
     #[test]
     fn test_decode_hash() {
         // Sherman, TX
-        let decoded1: Output = decode("KDI0NiYFFiAXDzoKES0H".to_string());
+        let hash1: Hash = Hash {
+            hash: "KDI0NiYFFiAXDzoKES0H".to_string(),
+        };
+        let decoded1: Output = decode(hash1);
         println!("{}", decoded1);
         let lat = decoded1.point.lat;
         assert!(33.0 < lat);
@@ -331,7 +336,10 @@ mod tests {
         assert!(time < 1585882000);
 
         // Providence, RI
-        let decoded2: Output = decode("KiQyJgQ2Kz8xOw0oFTMx".to_string());
+        let hash2: Hash = Hash {
+            hash: "KiQyJgQ2Kz8xOw0oFTMx".to_string(),
+        };
+        let decoded2: Output = decode(hash2);
         println!("{}", decoded2);
         let lat = decoded2.point.lat;
         assert!(41.0 < lat);

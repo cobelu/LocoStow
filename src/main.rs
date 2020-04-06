@@ -20,10 +20,10 @@ fn main() {
         time: 1586182020000000000,
     };
 
-    let swi_hash: String = encode(swi, 20);
+    let swi_hash: Hash = encode(swi, 20);
     println!("{}", swi_hash);
 
-    let pvd_hash: String = encode(pvd, 20);
+    let pvd_hash: Hash = encode(pvd, 20);
     println!("{}", pvd_hash);
 
     let swi_output: Output = decode(swi_hash);
