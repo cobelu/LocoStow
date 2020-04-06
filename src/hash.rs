@@ -11,8 +11,9 @@ extern crate regex;
 use num_traits::Num;
 use regex::Regex;
 use std::fmt;
-use num_traits::real::Real;
 
+// Must implement 'Copy' trait in order to do arithmetic by reference
+#[derive(Copy, Clone)]
 pub struct Point {
     // Franco: needed to do this because pub fn encode_hash is a public function implying that Point is public
     pub lat: f64,
@@ -60,7 +61,7 @@ struct TimeRange {
 }
 
 // Encodes the hash
-pub fn encode_hash(point: Point, precision: u8) -> String {
+pub fn encode(point: Point, precision: u8) -> String {
     // Ranges
     let mut lat_range: CoordRange = new_lat_range();
     let mut lon_range: CoordRange = new_lon_range();
@@ -291,7 +292,7 @@ mod tests {
             lon: -96.609016,
             time: 1585879412,
         };
-        let encoded1: String = encode_hash(point1, 30);
+        let encoded1: String = encode(point1, 30);
         assert_eq!(encoded1, "KDI0NiYFFiAXDzoKES0H");
 
         // Providence, RI
@@ -300,7 +301,7 @@ mod tests {
             lon: -71.412834,
             time: 1491098612,
         };
-        let encoded2: String = encode_hash(point2, 30);
+        let encoded2: String = encode(point2, 30);
         assert_eq!(encoded2, "KiQyJgQ2Kz8xOw0oFTMx");
     }
 
