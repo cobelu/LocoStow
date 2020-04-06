@@ -50,6 +50,16 @@ impl fmt::Display for Output {
     }
 }
 
+pub struct Hash {
+    pub hash: String,
+}
+
+impl fmt::Display for Hash {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.hash)
+    }
+}
+
 struct CoordRange {
     min: f64,
     max: f64,
@@ -61,7 +71,7 @@ struct TimeRange {
 }
 
 // Encodes the hash
-pub fn encode(point: Point, precision: u8) -> String {
+pub fn encode(point: Point, precision: u8) -> Hash {
     // Ranges
     let mut lat_range: CoordRange = new_lat_range();
     let mut lon_range: CoordRange = new_lon_range();
@@ -102,7 +112,7 @@ pub fn encode(point: Point, precision: u8) -> String {
     // https://docs.rs/base64/0.12.0/base64/
     let encoded = base64::encode(reg_vec);
 
-    return encoded.to_string();
+    return Hash{hash: encoded.to_string()};
 }
 
 pub fn decode(hash: String) -> Output {
@@ -292,8 +302,8 @@ mod tests {
             lon: -96.609016,
             time: 1585879412,
         };
-        let encoded1: String = encode(point1, 30);
-        assert_eq!(encoded1, "KDI0NiYFFiAXDzoKES0H");
+        let encoded1: Hash = encode(point1, 30);
+        assert_eq!(encoded1.hash, "KDI0NiYFFiAXDzoKES0H");
 
         // Providence, RI
         let point2: Point = Point {
@@ -301,8 +311,8 @@ mod tests {
             lon: -71.412834,
             time: 1491098612,
         };
-        let encoded2: String = encode(point2, 30);
-        assert_eq!(encoded2, "KiQyJgQ2Kz8xOw0oFTMx");
+        let encoded2: Hash = encode(point2, 30);
+        assert_eq!(encoded2.hash, "KiQyJgQ2Kz8xOw0oFTMx");
     }
 
     #[test]
