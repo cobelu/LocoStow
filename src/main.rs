@@ -6,7 +6,6 @@ mod arithmetic;
 // #[macro_use] extern crate lazy_static;
 
 use hash::*;
-use arithmetic::*;
 
 fn main() {
     let swi: Point = Point {
@@ -34,6 +33,6 @@ fn main() {
     println!("{}", pvd_output);
 
     let point_add: Point = swi + pvd;
-    println!("{}", pvd_output);
+    println!("{}", point_add);
 
 }
