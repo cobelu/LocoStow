@@ -7,10 +7,12 @@
 // mod hash {
 
 extern crate regex;
+extern crate fossil_delta;
 
 use num_traits::Num;
 use regex::Regex;
 use std::fmt;
+use fossil_delta::*;
 
 // Must implement 'Copy' trait in order to do arithmetic by reference
 #[derive(Copy, Clone)]
@@ -433,5 +435,33 @@ mod tests {
             calculate_bits_coord(&mut coord_range, 71.0589, 7),
             "1111111"
         );
+    }
+    #[test]
+    fn test_delta_encode() {
+        let pvd: Point = Point {
+            lat: 41.8269387,
+            lon: -71.4017563,
+            time: 1586182020000000000,
+        };
+        let swi: Point = Point {
+            lat: 33.6472022,
+            lon: -96.5987648,
+            time: 1585512888000000000,
+        };
+
+        let pvd_hash: Hash = encode(pvd, 20);
+        let swi_hash: Hash = encode(swi,20);
+
+        //println!("{}",pvd_hash);
+        //println!("{}",swi_hash);
+
+        //delta between two strings
+        let delta = delta(&pvd_hash.hash,&swi_hash.hash);
+
+        //revert delta to prev str, need last string used in delta encode
+        let delta_inv = deltainv(&swi_hash.hash,&delta);
+        //println!("{:?}",delta);
+        //println!("{:?}",delta_inv);
+        assert_eq!(delta_inv,pvd_hash.hash);
     }
 }
