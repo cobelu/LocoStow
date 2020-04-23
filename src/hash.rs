@@ -297,6 +297,7 @@ fn new_time_range() -> TimeRange {
 mod tests {
     // Franco: now this super will see high_or_low_time because it's a submodule
     use super::*;
+    use std::num::Wrapping;
 
     #[test]
     fn test_encode_hash() {
@@ -449,19 +450,49 @@ mod tests {
             time: 1585512888000000000,
         };
 
+        let bos: Point = Point {
+            lat: 42.3584308,
+            lon: -71.0597732,
+            time: 1585513888000000000,
+        };
+
         let pvd_hash: Hash = encode(pvd, 20);
         let swi_hash: Hash = encode(swi,20);
+        let bos_hash: Hash = encode(bos,20);
 
         //println!("{}",pvd_hash);
         //println!("{}",swi_hash);
 
         //delta between two strings
-        let delta = delta(&pvd_hash.hash,&swi_hash.hash);
+        let delta1 = delta(&pvd_hash.hash,&swi_hash.hash);
 
-        //revert delta to prev str, need last string used in delta encode
-        let delta_inv = deltainv(&swi_hash.hash,&delta);
+        let delta2= delta(&swi_hash.hash,&bos_hash.hash);
+
+        //delta of above deltas - need some way to convert to i8 to avoid overflow error
+        let mut delta_delta = vec![];
+        for (d1,d2) in delta1.iter().zip(delta2.iter()){
+            //
+            let d = d2.clone() as i8;
+            let y = d1.clone()as i8;
+            let diff = d - y;
+            delta_delta.push(diff);
+
+        }
+
+
+        //since delta of deltas = delta2-delta1, if we have a reference to delta1 maintained we can add delta of deltas to that, to get delta2
+        //ex: deltas of a,b,c nets you delta_delta of a-b, b-c, keep c and we can work backwards to decode
+        let mut delta_delta_inv  = vec![];
+        for (d1,d2) in delta1.iter().zip(delta_delta.iter()){
+            let d = d1.clone() as i8;
+            delta_delta_inv.push((d2+d) as u8);
+        }
+
+        //delta_delta_inv should now equal delta2, and using the crate the inverse function should return element a of that
+        //need to maintain last known hash and last know deltas to work backwards to decode
+        let delta_inv = deltainv(&swi_hash.hash,&delta_delta_inv);
         //println!("{:?}",delta);
         //println!("{:?}",delta_inv);
-        assert_eq!(delta_inv,pvd_hash.hash);
+        assert_eq!(delta_inv,swi_hash.hash);
     }
 }
