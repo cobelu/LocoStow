@@ -1,11 +1,11 @@
 mod arithmetic;
+mod file;
 mod hash;
 mod trie;
-mod file;
 
+use file::readIn;
 use hash::*;
 use std::process;
-use file::readIn;
 
 fn main() {
     let swi: Point = Point {
@@ -35,8 +35,8 @@ fn main() {
     let point_add: Point = swi + pvd;
     println!("{}", point_add);
 
-    if let Err(err) = readIn() {
-        println!("error running example: {}", err);
-        process::exit(1);
-    }
+    // if let Err(err) = readIn() {
+    //     println!("error running example: {}", err);
+    //     process::exit(1);
+    // }
 }

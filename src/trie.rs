@@ -7,6 +7,7 @@
 use super::hash;
 use hash::*;
 
+use std::collections::BTreeSet;
 use patricia_tree::PatriciaMap;
 
 pub fn tree_new() -> PatriciaMap<Hash> {
@@ -34,11 +35,11 @@ pub fn tree_get(tree: &patricia_tree::map::PatriciaMap<hash::Hash>, hash: Hash) 
     return val;
 }
 
-pub fn range_query(start: Point, end: Point, ) {
+pub fn range_query(tree: &patricia_tree::map::PatriciaMap<hash::Hash>, start: Point, end: Point, ) {
     // Encode the start and stop (with max precision)
     let start_hash = encode(start, 30);
     let end_hash = encode(end, 30);
-    // Get the shared prefix
+    // Who comes first?
 }
 
 #[cfg(test)]
@@ -85,7 +86,6 @@ mod tests {
 
         //println!("{:?}", get_ref);
         assert_eq!(get_ref,Some(&pvd_hash.hash));
-
     }
 
 }
