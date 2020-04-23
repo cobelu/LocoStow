@@ -3,7 +3,7 @@
 
 use super::hash;
 use hash::*;
-use trie::*;
+
 
 use std::collections::BTreeSet;
 use patricia_tree::PatriciaMap;
@@ -83,91 +83,94 @@ pub fn readIn() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
-
-pub fn read_to_btree_hash() -> &BTreeSet {
+/*
+pub fn read_to_btree_pt() -> BTreeSet<Point> {
     let mut b_tree = BTreeSet::new();
     let file =
-        File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv")?;
+        File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv").unwrap();
     let mut rdr = csv::Reader::from_reader(file);
     let mut bytes = 0;
-    for result in rdr.records() {
-        let record = result?;
-        let latitude: f64 = record[1].parse()?;
-        let longitude: f64 = record[2].parse()?;
-        let t: i64 = record[0].parse()?;
+    for result in rdr.records().into_iter() {
+        let record = result.unwrap();
+        let latitude: f64 = record[1].parse().unwrap();
+        let longitude: f64 = record[2].parse().unwrap();
+        let t: i64 = record[0].parse().unwrap();
         let pt: Point = Point {
             lat: latitude,
             lon: longitude,
             time: t,
         };
-        b_tree.insert(pt)
+        b_tree.insert(pt);
     }
-    return &b_tree
+    return b_tree
 }
-
-pub fun read_to_btree_hash() -> &BTreeSet {
+*/
+pub fn read_to_btree_hash() -> BTreeSet<String> {
     let mut b_tree = BTreeSet::new();
     let file =
-        File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv")?;
+        File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv").unwrap();
     let mut rdr = csv::Reader::from_reader(file);
     let mut bytes = 0;
-    for result in rdr.records() {
-        let record = result?;
-        let latitude: f64 = record[1].parse()?;
-        let longitude: f64 = record[2].parse()?;
-        let t: i64 = record[0].parse()?;
+    for result in rdr.records().into_iter() {
+        let record = result.unwrap();
+        let latitude: f64 = record[1].parse().unwrap();
+        let longitude: f64 = record[2].parse().unwrap();
+        let t: i64 = record[0].parse().unwrap();
         let pt: Point = Point {
             lat: latitude,
             lon: longitude,
             time: t,
         };
-        let hash: String = encode(pt, 24)
-        b_tree.insert(hash.hash)
+        let hash: Hash = encode(pt, 24);
+        b_tree.insert(hash.hash);
     }
-    return &b_tree
+    return b_tree
 }
 
-pub fun read_to_ptree() -> &PatriciaMap {
+pub fn read_to_ptree() -> PatriciaMap<String>{
     let mut p_tree = PatriciaMap::new();
     let file =
-        File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv")?;
+        File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv").unwrap();
     let mut rdr = csv::Reader::from_reader(file);
     let mut bytes = 0;
-    for result in rdr.records() {
-        let record = result?;
-        let latitude: f64 = record[1].parse()?;
-        let longitude: f64 = record[2].parse()?;
-        let t: i64 = record[0].parse()?;
+    for result in rdr.records().into_iter() {
+        let record = result.unwrap();
+        let latitude: f64 = record[1].parse().unwrap();
+        let longitude: f64 = record[2].parse().unwrap();
+        let t: i64 = record[0].parse().unwrap();
         let pt: Point = Point {
             lat: latitude,
             lon: longitude,
             time: t,
         };
-        let hash: String = encode(pt, 24).hash
-        p_tree.insert(hash)
+        let hash: String = encode(pt, 24).hash;
+        let value = hash.clone();
+        p_tree.insert(hash,value);
     }
-    return &p_tree
+    return p_tree
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::mem;
 
     #[test]
     fn test_read_in() {
         let result = readIn();
     }
-
+/*
     fn test_size_of_btree_pt() {
-        println!("{}", mem::size_of_val(read_to_btree_pt()))
+        println!("{}", mem::size_of_val(&read_to_btree_pt()))
     }
-
+*/
+    #[test]
     fn test_size_of_btree_hash() {
-        println!("{}", mem::size_of_val(read_to_btree_hash()))
+        println!("{}", mem::size_of_val(&read_to_btree_hash()))
     }
-
+    #[test]
     fn test_size_of__ptree() {
-        println!("{}", mem::size_of_val(read_to_ptree()))
+        println!("{}", mem::size_of_val(&read_to_ptree()))
     }
 
 }
