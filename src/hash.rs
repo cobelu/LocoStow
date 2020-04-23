@@ -457,8 +457,8 @@ mod tests {
         };
 
         let pvd_hash: Hash = encode(pvd, 20);
-        let swi_hash: Hash = encode(swi,20);
-        let bos_hash: Hash = encode(bos,20);
+        let swi_hash: Hash = encode(swi, 20);
+        let bos_hash: Hash = encode(bos, 20);
 
         //println!("{}",pvd_hash);
         //println!("{}",swi_hash);

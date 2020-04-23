@@ -30,9 +30,15 @@ pub fn tree_insert(mut tree: PatriciaMap<Hash>, hash: Hash) -> Option<Hash> {
 
 //Introduces another layer of borrowing - tree consumed, lack of self param
 pub fn tree_get(tree: &patricia_tree::map::PatriciaMap<hash::Hash>, hash: Hash) -> Option<&Hash> {
-
     let val = tree.get(hash.hash);
     return val;
+}
+
+pub fn range_query(start: Point, end: Point, ) {
+    // Encode the start and stop (with max precision)
+    let start_hash = encode(start, 30);
+    let end_hash = encode(end, 30);
+    // Get the shared prefix
 }
 
 #[cfg(test)]
