@@ -6,13 +6,10 @@
 // (comment has implications in the test sub mod
 // mod hash {
 
-extern crate regex;
-extern crate fossil_delta;
-
+use fossil_delta::*;
 use num_traits::Num;
 use regex::Regex;
 use std::fmt;
-use fossil_delta::*;
 
 // Must implement 'Copy' trait in order to do arithmetic by reference
 #[derive(Copy, Clone)]
@@ -464,35 +461,77 @@ mod tests {
         //println!("{}",swi_hash);
 
         //delta between two strings
-        let delta1 = delta(&pvd_hash.hash,&swi_hash.hash);
+        let delta1 = delta(&pvd_hash.hash, &swi_hash.hash);
 
-        let delta2= delta(&swi_hash.hash,&bos_hash.hash);
+        let delta2 = delta(&swi_hash.hash, &bos_hash.hash);
 
         //delta of above deltas - need some way to convert to i8 to avoid overflow error
         let mut delta_delta = vec![];
-        for (d1,d2) in delta1.iter().zip(delta2.iter()){
+        for (d1, d2) in delta1.iter().zip(delta2.iter()) {
             //
             let d = d2.clone() as i8;
-            let y = d1.clone()as i8;
+            let y = d1.clone() as i8;
             let diff = d - y;
             delta_delta.push(diff);
-
         }
-
 
         //since delta of deltas = delta2-delta1, if we have a reference to delta1 maintained we can add delta of deltas to that, to get delta2
         //ex: deltas of a,b,c nets you delta_delta of a-b, b-c, keep c and we can work backwards to decode
-        let mut delta_delta_inv  = vec![];
-        for (d1,d2) in delta1.iter().zip(delta_delta.iter()){
+        let mut delta_delta_inv = vec![];
+        for (d1, d2) in delta1.iter().zip(delta_delta.iter()) {
             let d = d1.clone() as i8;
-            delta_delta_inv.push((d2+d) as u8);
+            delta_delta_inv.push((d2 + d) as u8);
         }
 
         //delta_delta_inv should now equal delta2, and using the crate the inverse function should return element a of that
         //need to maintain last known hash and last know deltas to work backwards to decode
-        let delta_inv = deltainv(&swi_hash.hash,&delta_delta_inv);
+        let delta_inv = deltainv(&swi_hash.hash, &delta_delta_inv);
         //println!("{:?}",delta);
         //println!("{:?}",delta_inv);
-        assert_eq!(delta_inv,swi_hash.hash);
+        assert_eq!(delta_inv, swi_hash.hash);
+    }
+
+    #[test]
+    fn similar_place_test() {
+        let pvd_old: Hash = encode(
+            Point {
+                lat: 41.8269387,
+                lon: -71.4017563,
+                time: 1586182020000000000,
+            },
+            30,
+        );
+        let pvd_new: Hash = encode(
+            Point {
+                lat: 41.8269387,
+                lon: -71.4017563,
+                time: 1587912112000000000,
+            },
+            30,
+        );
+        let difference = delta(&pvd_old.hash, &pvd_new.hash);
+        println!("Old: {}", pvd_old.hash);
+        println!("New: {}", pvd_new.hash);
+        println!("Difference: {}", String::from_utf8(difference).unwrap());
+        let swi_old: Hash = encode(
+            Point {
+                lat: 33.635590,
+                lon: -96.609016,
+                time: 1585879412000000000,
+            },
+            30,
+        );
+        let swi_new: Hash = encode(
+            Point {
+                lat: 33.635590,
+                lon: -96.609016,
+                time: 1587912112000000000,
+            },
+            30,
+        );
+        let difference = delta(&swi_old.hash, &swi_new.hash);
+        println!("Old: {}", swi_old.hash);
+        println!("New: {}", swi_new.hash);
+        println!("Difference: {}", String::from_utf8(difference).unwrap());
     }
 }

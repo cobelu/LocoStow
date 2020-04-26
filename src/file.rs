@@ -3,8 +3,6 @@
 
 use super::hash;
 use hash::*;
-
-
 use std::collections::BTreeSet;
 use patricia_tree::PatriciaMap;
 use std::error::Error;
@@ -83,28 +81,28 @@ pub fn readIn() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
-/*
-pub fn read_to_btree_pt() -> BTreeSet<Point> {
-    let mut b_tree = BTreeSet::new();
-    let file =
-        File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv").unwrap();
-    let mut rdr = csv::Reader::from_reader(file);
-    let mut bytes = 0;
-    for result in rdr.records().into_iter() {
-        let record = result.unwrap();
-        let latitude: f64 = record[1].parse().unwrap();
-        let longitude: f64 = record[2].parse().unwrap();
-        let t: i64 = record[0].parse().unwrap();
-        let pt: Point = Point {
-            lat: latitude,
-            lon: longitude,
-            time: t,
-        };
-        b_tree.insert(pt);
-    }
-    return b_tree
-}
-*/
+
+// pub fn read_to_btree_pt() -> BTreeSet<Point> {
+//     let mut b_tree = BTreeSet::new();
+//     let file =
+//         File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv").unwrap();
+//     let mut rdr = csv::Reader::from_reader(file);
+//     let mut bytes = 0;
+//     for result in rdr.records().into_iter() {
+//         let record = result.unwrap();
+//         let latitude: f64 = record[1].parse().unwrap();
+//         let longitude: f64 = record[2].parse().unwrap();
+//         let t: i64 = record[0].parse().unwrap();
+//         let pt: Point = Point {
+//             lat: latitude,
+//             lon: longitude,
+//             time: t,
+//         };
+//         b_tree.insert(pt);
+//     }
+//     return b_tree
+// }
+
 pub fn read_to_btree_hash() -> BTreeSet<String> {
     let mut b_tree = BTreeSet::new();
     let file =
