@@ -12,6 +12,8 @@ use std::fs::File;
 use heapsize::heap_size_of;
 use std::mem::{size_of, size_of_val};
 use fossil_delta::delta;
+use std::mem;
+use std::time::Instant;
 
 pub fn readIn() -> Result<(), Box<dyn Error>> {
     // 2 reads allows size for vector creation - avoids resizing during inserts. Unsure if tradeoff is worth it.
@@ -106,6 +108,7 @@ pub fn read_to_btree_pt() -> BTreeSet<Point> {
 }
 */
 pub fn read_to_btree_hash() -> BTreeSet<String> {
+    let now = Instant::now();
     let mut b_tree = BTreeSet::new();
     let file =
         File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv").unwrap();
@@ -124,10 +127,13 @@ pub fn read_to_btree_hash() -> BTreeSet<String> {
         let hash: Hash = encode(pt, 24);
         b_tree.insert(hash.hash);
     }
+
+    println!("{} {}","Time to read into BTree:",now.elapsed().as_millis());
     return b_tree
 }
 
 pub fn read_to_ptree() -> PatriciaMap<String>{
+    let now = Instant::now();
     let mut p_tree = PatriciaMap::new();
     let file =
         File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv").unwrap();
@@ -146,7 +152,9 @@ pub fn read_to_ptree() -> PatriciaMap<String>{
         let hash: String = encode(pt, 24).hash;
         let value = hash.clone();
         p_tree.insert(hash,value);
+
     }
+    println!("{} {}","Time to read into PTree:",now.elapsed().as_millis());
     return p_tree
 }
 
