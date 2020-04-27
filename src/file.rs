@@ -10,7 +10,6 @@ use std::fs::File;
 use heapsize::heap_size_of;
 use std::mem::{size_of, size_of_val};
 use fossil_delta::delta;
-use std::mem;
 use std::time::Instant;
 
 pub fn readIn() -> Result<(), Box<dyn Error>> {
@@ -125,8 +124,7 @@ pub fn read_to_btree_hash() -> BTreeSet<String> {
         let hash: Hash = encode(pt, 24);
         b_tree.insert(hash.hash);
     }
-
-    println!("{} {}","Time to read into BTree:",now.elapsed().as_millis());
+    println!("{} {}","BTree Read:", now.elapsed().as_millis());
     return b_tree
 }
 
@@ -150,9 +148,8 @@ pub fn read_to_ptree() -> PatriciaMap<String>{
         let hash: String = encode(pt, 24).hash;
         let value = hash.clone();
         p_tree.insert(hash,value);
-
     }
-    println!("{} {}","Time to read into PTree:",now.elapsed().as_millis());
+    println!("{} {}","PTree Read:", now.elapsed().as_millis());
     return p_tree
 }
 
@@ -165,11 +162,11 @@ mod tests {
     fn test_read_in() {
         let result = readIn();
     }
-/*
-    fn test_size_of_btree_pt() {
-        println!("{}", mem::size_of_val(&read_to_btree_pt()))
-    }
-*/
+    /*
+        fn test_size_of_btree_pt() {
+            println!("{}", mem::size_of_val(&read_to_btree_pt()))
+        }
+    */
     #[test]
     fn test_size_of_btree_hash() {
         println!("{}", mem::size_of_val(&read_to_btree_hash()))
