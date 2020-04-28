@@ -295,6 +295,7 @@ mod tests {
     // Franco: now this super will see high_or_low_time because it's a submodule
     use super::*;
     use std::num::Wrapping;
+    use std::mem;
 
     #[test]
     fn test_encode_hash() {
