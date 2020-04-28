@@ -35,6 +35,11 @@ fn main() {
     let point_add: Point = swi + pvd;
     println!("{}", point_add);
 
+    let result = readIn();
+
+    if result.is_ok(){
+        println!("{}", "Success!");
+    }
     // if let Err(err) = readIn() {
     //     println!("error running example: {}", err);
     //     process::exit(1);

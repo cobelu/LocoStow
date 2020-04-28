@@ -11,12 +11,13 @@ use heapsize::heap_size_of;
 use std::mem::{size_of, size_of_val};
 use fossil_delta::delta;
 use std::time::Instant;
+use std::io;
 
 pub fn readIn() -> Result<(), Box<dyn Error>> {
     // 2 reads allows size for vector creation - avoids resizing during inserts. Unsure if tradeoff is worth it.
 
     let file2 =
-        File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv")?;
+        File::open(io::stdin())?;
 
     let mut rdrcnt = csv::Reader::from_reader(file2);
 
@@ -31,7 +32,7 @@ pub fn readIn() -> Result<(), Box<dyn Error>> {
     //obvious tradeoff - heap v stack
     let now = Instant::now();
     let file =
-        File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv")?;
+        File::open(io::stdin())?;
     let mut rdr = csv::Reader::from_reader(file);
     let mut list: Vec<Point> = Vec::new();
     list.reserve_exact(cnt);
@@ -64,6 +65,7 @@ pub fn readIn() -> Result<(), Box<dyn Error>> {
     println!("{} {}","Point and Hash Read:",point_hash_read);
     println!("{} {}","Hash Overhead",point_hash_read - point_read);
     println!("{} {}","Avg Time to encode Hash Point",(point_hash_read - point_read)/cnt as u128);
+    /*
     println!("{}", &hash_vec[0].len());
     println!("{}", bytes / cnt);
 
@@ -76,7 +78,7 @@ pub fn readIn() -> Result<(), Box<dyn Error>> {
         let delta = delta(curr, next);
         delta_vec.push(delta);
     }
-
+*/
     let swi_pt: Point = Point {
         lat: 33.6472022,
         lon: -96.5987648,
@@ -94,7 +96,7 @@ pub fn readIn() -> Result<(), Box<dyn Error>> {
 pub fn read_to_btree_pt() -> BTreeSet<Point> {
     let mut b_tree = BTreeSet::new();
      let file =
-         File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv").unwrap();
+         File::open(io::stdin()).unwrap();
      let mut rdr = csv::Reader::from_reader(file);
      let mut bytes = 0;
      for result in rdr.records().into_iter() {
@@ -116,7 +118,7 @@ pub fn read_to_btree_hash() -> BTreeSet<String> {
     let now = Instant::now();
     let mut b_tree = BTreeSet::new();
     let file =
-        File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv").unwrap();
+        File::open(io::stdin()).unwrap();
     let mut rdr = csv::Reader::from_reader(file);
     let mut bytes = 0;
     for result in rdr.records().into_iter() {
@@ -140,7 +142,7 @@ pub fn read_to_ptree() -> PatriciaMap<String>{
     let now = Instant::now();
     let mut p_tree = PatriciaMap::new();
     let file =
-        File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv").unwrap();
+        File::open(io::stdin()).unwrap();
     let mut rdr = csv::Reader::from_reader(file);
     let mut bytes = 0;
     for result in rdr.records().into_iter() {
