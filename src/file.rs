@@ -17,7 +17,7 @@ pub fn readIn() -> Result<(), Box<dyn Error>> {
     // 2 reads allows size for vector creation - avoids resizing during inserts. Unsure if tradeoff is worth it.
 
     let file2 =
-        File::open(io::stdin())?;
+    File::open("/Users/cobelu/Documents/School/CSCI2270/brown-cs227-tsbs-help/data/fake-data")?;
 
     let mut rdrcnt = csv::Reader::from_reader(file2);
 
@@ -32,7 +32,7 @@ pub fn readIn() -> Result<(), Box<dyn Error>> {
     //obvious tradeoff - heap v stack
     let now = Instant::now();
     let file =
-        File::open(io::stdin())?;
+    File::open("/Users/cobelu/Documents/School/CSCI2270/brown-cs227-tsbs-help/data/fake-data")?;
     let mut rdr = csv::Reader::from_reader(file);
     let mut list: Vec<Point> = Vec::new();
     list.reserve_exact(cnt);
@@ -118,7 +118,7 @@ pub fn read_to_btree_hash() -> BTreeSet<String> {
     let now = Instant::now();
     let mut b_tree = BTreeSet::new();
     let file =
-        File::open(io::stdin()).unwrap();
+    File::open("/Users/cobelu/Documents/School/CSCI2270/brown-cs227-tsbs-help/data/fake-data").unwrap();
     let mut rdr = csv::Reader::from_reader(file);
     let mut bytes = 0;
     for result in rdr.records().into_iter() {
@@ -142,7 +142,7 @@ pub fn read_to_ptree() -> PatriciaMap<String>{
     let now = Instant::now();
     let mut p_tree = PatriciaMap::new();
     let file =
-        File::open(io::stdin()).unwrap();
+    File::open("/Users/cobelu/Documents/School/CSCI2270/brown-cs227-tsbs-help/data/fake-data").unwrap();
     let mut rdr = csv::Reader::from_reader(file);
     let mut bytes = 0;
     for result in rdr.records().into_iter() {

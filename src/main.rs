@@ -3,45 +3,44 @@ mod file;
 mod hash;
 mod trie;
 
-use file::readIn;
+use file::{readIn, read_to_btree_hash, read_to_ptree};
 use hash::*;
 use std::process;
 
 fn main() {
-    let swi: Point = Point {
-        lat: 33.6472022,
-        lon: -96.5987648,
-        time: 1585512888000000000,
-    };
+    //     let swi: Point = Point {
+    //         lat: 33.6472022,
+    //         lon: -96.5987648,
+    //         time: 1585512888000000000,
+    //     };
 
-    let pvd: Point = Point {
-        lat: 41.8269387,
-        lon: -71.4017563,
-        time: 1586182020000000000,
-    };
+    //     let pvd: Point = Point {
+    //         lat: 41.8269387,
+    //         lon: -71.4017563,
+    //         time: 1586182020000000000,
+    //     };
 
-    let swi_hash: Hash = encode(swi, 20);
-    println!("{}", swi_hash);
+    //     let swi_hash: Hash = encode(swi, 20);
+    //     println!("{}", swi_hash);
 
-    let pvd_hash: Hash = encode(pvd, 20);
-    println!("{}", pvd_hash);
+    //     let pvd_hash: Hash = encode(pvd, 20);
+    //     println!("{}", pvd_hash);
 
-    let swi_output: Output = decode(swi_hash);
-    println!("{}", swi_output);
+    //     let swi_output: Output = decode(swi_hash);
+    //     println!("{}", swi_output);
 
-    let pvd_output: Output = decode(pvd_hash);
-    println!("{}", pvd_output);
+    //     let pvd_output: Output = decode(pvd_hash);
+    //     println!("{}", pvd_output);
 
-    let point_add: Point = swi + pvd;
-    println!("{}", point_add);
+    //     let point_add: Point = swi + pvd;
+    //     println!("{}", point_add);
 
-    let result = readIn();
-
-    if result.is_ok(){
-        println!("{}", "Success!");
-    }
-    // if let Err(err) = readIn() {
-    //     println!("error running example: {}", err);
-    //     process::exit(1);
+    // let result = readIn();
+    // if result.is_ok() {
+    //     println!("{}", "Success!");
     // }
+
+    // let result = read_to_btree_hash();
+
+    let result = read_to_ptree();
 }
