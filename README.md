@@ -1,5 +1,7 @@
 # LocoStow
 
+![alt text](assets/logo.png "Logo")
+
 LocoStow is a time series data storage scheme.
 It's goal is to efficiently store and index geotemporal data.
 
