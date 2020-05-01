@@ -1,6 +1,6 @@
 # LocoStow
 
-![alt text](assets/logo.png "Logo")
+![alt text](https://github.com/cobelu/brown-cs227-tsbs-help/raw/master/logo.png "Logo")
 
 LocoStow is a time series data storage scheme.
 It's goal is to efficiently store and index geotemporal data.
@@ -29,10 +29,3 @@ Many storage schemes utilize delta or delta-delta encoding.
 LocoStow also does this.
 We plan to test how well a delta or delta-delta encoding works on a geotemporal hash.
 We can then compare that to the storage of raw data, delta of raw data, and delta-delta of raw data to see which is best.
-
-## TODO
-
-* Representation
-    * Decode function
-* Indexing
-* Storage
