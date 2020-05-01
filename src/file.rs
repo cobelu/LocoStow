@@ -32,7 +32,7 @@ pub fn read_in() -> Result<(), Box<dyn Error>> {
     //obvious tradeoff - heap v stack
     let now = Instant::now();
     let file =
-    File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv")?;
+    File::open("/Users/cobelu/Documents/School/CSCI2270/brown-cs227-tsbs-help/data/fake-data")?;
     let mut rdr = csv::Reader::from_reader(file);
     let mut list: Vec<Point> = Vec::new();
     list.reserve_exact(cnt);
