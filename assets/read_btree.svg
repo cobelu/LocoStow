@@ -2937,8 +2937,8 @@
 <text  x="744.33" y="511.5" ></text>
 </g>
 <g >
-<title>loco_stow`loco_stow::file::readIn::hd98c75d165468b3a (2,056 samples, 33.21%)</title><rect x="10.6" y="565" width="391.8" height="15.0" fill="rgb(248,44,12)" rx="2" ry="2" />
-<text  x="13.57" y="575.5" >loco_stow`loco_stow::file::readIn::hd98c75d165468b3a</text>
+<title>loco_stow`loco_stow::file::read_in::hd98c75d165468b3a (2,056 samples, 33.21%)</title><rect x="10.6" y="565" width="391.8" height="15.0" fill="rgb(248,44,12)" rx="2" ry="2" />
+<text  x="13.57" y="575.5" >loco_stow`loco_stow::file::read_in::hd98c75d165468b3a</text>
 </g>
 <g >
 <title>loco_stow`_$LT$$RF$mut$u20$I$u20$as$u20$core..iter..traits..iterator..Iterator$GT$::next::h66ebbee7b4e0b798 (82 samples, 1.32%)</title><rect x="993.9" y="277" width="15.6" height="15.0" fill="rgb(220,57,20)" rx="2" ry="2" />

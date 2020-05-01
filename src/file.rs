@@ -13,7 +13,7 @@ use fossil_delta::delta;
 use std::time::Instant;
 use std::io;
 
-pub fn readIn() -> Result<(), Box<dyn Error>> {
+pub fn read_in() -> Result<(), Box<dyn Error>> {
     // 2 reads allows size for vector creation - avoids resizing during inserts. Unsure if tradeoff is worth it.
 
     let file2 =
@@ -32,7 +32,7 @@ pub fn readIn() -> Result<(), Box<dyn Error>> {
     //obvious tradeoff - heap v stack
     let now = Instant::now();
     let file =
-    File::open("/Users/cobelu/Documents/School/CSCI2270/brown-cs227-tsbs-help/data/fake-data")?;
+    File::open("C:/Users/chris/Documents/GitHub/brown-cs227-tsbs-help/data/fake-data.csv")?;
     let mut rdr = csv::Reader::from_reader(file);
     let mut list: Vec<Point> = Vec::new();
     list.reserve_exact(cnt);
@@ -55,21 +55,22 @@ pub fn readIn() -> Result<(), Box<dyn Error>> {
     println!("{} {}","Point Read:",point_read);
     let mut hash_vec: Vec<String> = Vec::new();
     hash_vec.reserve_exact(cnt);
+    let delta_list =list.clone();
+
     for point in list {
         let hash: Hash = encode(point, 24);
         bytes += hash.hash.len();
         hash_vec.push(hash.hash);
     }
-    //Should be the same
     let point_hash_read = now.elapsed().as_nanos();
     println!("{} {}","Point and Hash Read:",point_hash_read);
     println!("{} {}","Hash Overhead",point_hash_read - point_read);
     println!("{} {}","Avg Time to encode Hash Point",(point_hash_read - point_read)/cnt as u128);
-    /*
+
     println!("{}", &hash_vec[0].len());
     println!("{}", bytes / cnt);
 
-    //experiment w/ deltas, need to retain 1 hash to decode
+    //Delta Encode GT Hash
     let mut delta_vec: Vec<Vec<u8>> = Vec::new();
     delta_vec.reserve_exact(cnt);
     for x in 0..hash_vec.len() - 1 {
@@ -78,7 +79,22 @@ pub fn readIn() -> Result<(), Box<dyn Error>> {
         let delta = delta(curr, next);
         delta_vec.push(delta);
     }
-*/
+    let delta_string_read = now.elapsed().as_nanos();
+    println!("{} {}","Delta Encode w GeoHash:",delta_string_read);
+    println!("{} {}","Delta String Overhead",delta_string_read - point_hash_read);
+
+    let mut delta_vec_float: Vec<Point> = Vec::new();
+    delta_vec_float.reserve_exact(cnt);
+    for x in 0..delta_list.len()-1{
+        let curr = delta_list[x].clone();
+        let next = delta_list[x + 1].clone();
+        let delta_pt = next-curr;
+        delta_vec_float.push(delta_pt);
+    }
+    let delta_float_read = now.elapsed().as_nanos();
+    println!("{} {}","Delta Encode w Points:",delta_float_read);
+    println!("{} {}","Delta Float Overhead",delta_float_read - delta_string_read);
+
     let swi_pt: Point = Point {
         lat: 33.6472022,
         lon: -96.5987648,
@@ -120,7 +136,7 @@ pub fn read_to_btree_hash() -> BTreeSet<String> {
     let file =
     File::open("/Users/cobelu/Documents/School/CSCI2270/brown-cs227-tsbs-help/data/fake-data").unwrap();
     let mut rdr = csv::Reader::from_reader(file);
-    let mut bytes = 0;
+    //let mut bytes = 0;
     for result in rdr.records().into_iter() {
         let record = result.unwrap();
         let latitude: f64 = record[1].parse().unwrap();
@@ -144,7 +160,7 @@ pub fn read_to_ptree() -> PatriciaMap<String>{
     let file =
     File::open("/Users/cobelu/Documents/School/CSCI2270/brown-cs227-tsbs-help/data/fake-data").unwrap();
     let mut rdr = csv::Reader::from_reader(file);
-    let mut bytes = 0;
+   // let mut bytes = 0;
     for result in rdr.records().into_iter() {
         let record = result.unwrap();
         let latitude: f64 = record[1].parse().unwrap();
@@ -174,7 +190,7 @@ mod tests {
 
     #[test]
     fn test_read_in() {
-        let result = readIn();
+        let result = read_in();
     }
     /*
         fn test_size_of_btree_pt() {
@@ -186,8 +202,8 @@ mod tests {
         let btree_test = read_to_btree_hash();
         println!("{}", mem::size_of_val(&btree_test));
         let now = Instant::now();
-        let get_Val = btree_test.get("PQkpOx8rKTkfKx0p");
-        //println!("{:?}",get_Val);
+        let get_val = btree_test.get("PQkpOx8rKTkfKx0p");
+        //println!("{:?}",get_val);
         println!("{} {} {}","BTree Get:", now.elapsed().as_nanos(), "nanoseconds");
     }
     #[test]

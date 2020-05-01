@@ -36017,8 +36017,8 @@
 <text  x="189.11" y="367.5" ></text>
 </g>
 <g >
-<title>loco_stow`loco_stow::file::readIn::hd98c75d165468b3a (4,093 samples, 49.74%)</title><rect x="10.4" y="565" width="587.0" height="15.0" fill="rgb(228,42,2)" rx="2" ry="2" />
-<text  x="13.43" y="575.5" >loco_stow`loco_stow::file::readIn::hd98c75d165468b3a</text>
+<title>loco_stow`loco_stow::file::read_in::hd98c75d165468b3a (4,093 samples, 49.74%)</title><rect x="10.4" y="565" width="587.0" height="15.0" fill="rgb(228,42,2)" rx="2" ry="2" />
+<text  x="13.43" y="575.5" >loco_stow`loco_stow::file::read_in::hd98c75d165468b3a</text>
 </g>
 <g >
 <title>loco_stow`regex::dfa::Fsm::follow_epsilons::h21cf80228088049a (227 samples, 2.76%)</title><rect x="759.0" y="453" width="32.6" height="15.0" fill="rgb(253,146,10)" rx="2" ry="2" />

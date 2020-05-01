@@ -3,7 +3,7 @@ mod file;
 mod hash;
 mod trie;
 
-use file::{readIn, read_to_btree_hash, read_to_ptree};
+use file::{read_in, read_to_btree_hash, read_to_ptree};
 use hash::*;
 use std::process;
 
@@ -35,12 +35,12 @@ fn main() {
     //     let point_add: Point = swi + pvd;
     //     println!("{}", point_add);
 
-    // let result = readIn();
-    // if result.is_ok() {
-    //     println!("{}", "Success!");
-    // }
+     let result = read_in();
+     if result.is_ok() {
+         println!("{}", "Success!");
+     }
 
     // let result = read_to_btree_hash();
 
-    let result = read_to_ptree();
+   // let result = read_to_ptree();
 }
