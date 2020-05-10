@@ -131,11 +131,12 @@ pub fn read_to_btree_pt() -> BTreeSet<Point> {
  }
 */
 pub fn read_to_btree_hash() -> BTreeSet<String> {
-    let now = Instant::now();
+    
     let mut b_tree = BTreeSet::new();
     let file =
     File::open("/Users/cobelu/Documents/School/CSCI2270/brown-cs227-tsbs-help/data/fake-data").unwrap();
     let mut rdr = csv::Reader::from_reader(file);
+    let mut hash_vec: Vec<String> = Vec::new();
     //let mut bytes = 0;
     for result in rdr.records().into_iter() {
         let record = result.unwrap();
@@ -148,9 +149,14 @@ pub fn read_to_btree_hash() -> BTreeSet<String> {
             time: t,
         };
         let hash: Hash = encode(pt, 24);
-        b_tree.insert(hash.hash);
+        hash_vec.push(hash.hash);
+        
     }
-    println!("{} {}","BTree Read:", now.elapsed().as_millis());
+    let now = Instant::now();
+    for hash_str in hash_vec{
+        b_tree.insert(hash_str);
+    }
+    println!("{} {}","BTree Insert:", now.elapsed().as_millis());
     return b_tree
 }
 
@@ -161,6 +167,7 @@ pub fn read_to_ptree() -> PatriciaMap<String>{
     File::open("/Users/cobelu/Documents/School/CSCI2270/brown-cs227-tsbs-help/data/fake-data").unwrap();
     let mut rdr = csv::Reader::from_reader(file);
    // let mut bytes = 0;
+    let mut hash_vec: Vec<String> = Vec::new();
     for result in rdr.records().into_iter() {
         let record = result.unwrap();
         let latitude: f64 = record[1].parse().unwrap();
@@ -172,12 +179,18 @@ pub fn read_to_ptree() -> PatriciaMap<String>{
             time: t,
         };
         let hash: String = encode(pt, 24).hash;
-        let value = hash.clone();
-        p_tree.insert(hash,value);
+        
+        hash_vec.push(hash.hash);
+        
 
 
     }
-    println!("{} {}","PTree Read:", now.elapsed().as_millis());
+    let now = Instant::now();
+    for hash_str in hash_vec{
+        let value = hash_str.clone();
+        p_tree.insert(hash_str,value);
+    }
+    println!("{} {}","PTree Insert:", now.elapsed().as_millis());
 
     return p_tree
 }
