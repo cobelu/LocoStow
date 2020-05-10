@@ -8,11 +8,11 @@ use hash::*;
 use std::process;
 
 fn main() {
-    //     let swi: Point = Point {
-    //         lat: 33.6472022,
-    //         lon: -96.5987648,
-    //         time: 1585512888000000000,
-    //     };
+        let swi: Point = Point {
+            lat: 33.6472022,
+            lon: -96.5987648,
+            time: 1585512888000000000,
+        };
 
     //     let pvd: Point = Point {
     //         lat: 41.8269387,
@@ -20,8 +20,13 @@ fn main() {
     //         time: 1586182020000000000,
     //     };
 
-    //     let swi_hash: Hash = encode(swi, 20);
-    //     println!("{}", swi_hash);
+        let swi_hash: Hash = encode(swi, 20);
+        println!("{}", swi_hash);
+
+        let size1 = std::mem::size_of_val(&swi);
+        println!("{}", size1);
+        let size2 = std::mem::size_of_val(&swi_hash.hash);
+        println!("{}", size2);
 
     //     let pvd_hash: Hash = encode(pvd, 20);
     //     println!("{}", pvd_hash);
@@ -35,10 +40,10 @@ fn main() {
     //     let point_add: Point = swi + pvd;
     //     println!("{}", point_add);
 
-     let result = read_in();
-     if result.is_ok() {
-         println!("{}", "Success!");
-     }
+    //  let result = read_in();
+    //  if result.is_ok() {
+    //      println!("{}", "Success!");
+    //  }
 
     // let result = read_to_btree_hash();
 

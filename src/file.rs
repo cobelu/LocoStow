@@ -180,10 +180,7 @@ pub fn read_to_ptree() -> PatriciaMap<String>{
         };
         let hash: String = encode(pt, 24).hash;
         
-        hash_vec.push(hash.hash);
-        
-
-
+        hash_vec.push(hash);
     }
     let now = Instant::now();
     for hash_str in hash_vec{
@@ -215,16 +212,17 @@ mod tests {
         let btree_test = read_to_btree_hash();
         println!("{}", mem::size_of_val(&btree_test));
         let now = Instant::now();
-        let get_val = btree_test.get("PQkpOx8rKTkfKx0p");
+        // let get_val = btree_test.get("PQkpOx8rKTkfKx0p");
         //println!("{:?}",get_val);
         println!("{} {} {}","BTree Get:", now.elapsed().as_nanos(), "nanoseconds");
     }
+    
     #[test]
     fn test_size_of__ptree() {
         let ptree_test = read_to_ptree();
         println!("{}", mem::size_of_val(&ptree_test));
         let now = Instant::now();
-        let get_Val = ptree_test.get("PQkpOx8rKTkfKx0p");
+        // let get_Val = ptree_test.get("PQkpOx8rKTkfKx0p");
         //println!("{:?}",get_Val);
         println!("{} {} {}","PTree Get:", now.elapsed().as_nanos(), "nanoseconds");
     }
